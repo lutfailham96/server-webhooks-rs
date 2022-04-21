@@ -6,6 +6,7 @@ WORKDIR /usr/src/app
 
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
+        build-essential \
         ca-certificates \
         wget \
     && wget https://sh.rustup.rs -O rustup.sh \
