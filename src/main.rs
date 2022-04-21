@@ -32,7 +32,7 @@ async fn root() -> Result<impl Responder> {
     Ok(web::Json(response))
 }
 
-#[get("/webhook")]
+#[get("/webhooks")]
 async fn webhook(data: web::Data<AppState>) -> Result<impl Responder> {
     let cmd = Command::new(&data.program_command)
         .output()
