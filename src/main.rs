@@ -2,7 +2,7 @@ use actix_web::middleware::Logger;
 use actix_web::{get, web, App, HttpServer, Responder, Result};
 use clap::Parser;
 use env_logger::Env;
-use serde::{Serialize, Deserialize};
+use serde::{Deserialize, Serialize};
 use std::process::Command;
 
 struct AppState {
@@ -39,7 +39,10 @@ async fn root() -> Result<impl Responder> {
 }
 
 #[get("/webhooks")]
-async fn webhook(data: web::Data<AppState>, query_info: web::Query<QueryInfo>) -> Result<impl Responder> {
+async fn webhook(
+    data: web::Data<AppState>,
+    query_info: web::Query<QueryInfo>,
+) -> Result<impl Responder> {
     let cmd = Command::new(&data.program_command)
         .arg("--project")
         .arg(query_info.project.clone())
