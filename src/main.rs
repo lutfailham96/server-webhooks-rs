@@ -2,7 +2,7 @@ use actix_web::middleware::Logger;
 use actix_web::{get, web, App, HttpServer, Responder, Result};
 use clap::Parser;
 use env_logger::Env;
-use serde::Serialize;
+use serde::{Serialize, Deserialize};
 use std::process::Command;
 
 struct AppState {
@@ -23,6 +23,12 @@ struct JsonResponse {
     data: String,
 }
 
+#[derive(Deserialize)]
+struct QueryInfo {
+    project: String,
+    branch: String,
+}
+
 #[get("/")]
 async fn root() -> Result<impl Responder> {
     let response = JsonResponse {
@@ -33,8 +39,12 @@ async fn root() -> Result<impl Responder> {
 }
 
 #[get("/webhooks")]
-async fn webhook(data: web::Data<AppState>) -> Result<impl Responder> {
+async fn webhook(data: web::Data<AppState>, query_info: web::Query<QueryInfo>) -> Result<impl Responder> {
     let cmd = Command::new(&data.program_command)
+        .arg("--project")
+        .arg(query_info.project.clone())
+        .arg("--branch")
+        .arg(query_info.branch.clone())
         .output()
         .expect("Failed to run program");
     let response = JsonResponse {
